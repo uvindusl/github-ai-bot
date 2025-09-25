@@ -1,2 +1,4 @@
 .venv
 __pycache__
+.env
+uvindu-ai-bot.2025-09-25.private-key.pem
