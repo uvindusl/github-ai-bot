@@ -133,4 +133,25 @@ def create_pr(title, repo_name, head, base, installation_id):
         if "not found" in str(e).lower() or "not exist" in str(e).lower():
              raise HTTPException(status_code=422, detail=f"Source or base branch not found: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to create Pull Request: {e}")
-    
+
+
+def genarate_review(repo, issue_number):
+    pr = repo.get_pull(issue_number)
+    diff = pr.get_files()
+    file_diffs = ""
+    for file in diff:
+        file_diffs += f"--- {file.filename} ---\n{file.patch}\n\n"
+
+    try:
+        prompt = (
+            "You are an expert AI coding assistant. Analyze the following code. "
+            "Provide a concise, helpful code review focusing on potential bugs, "
+            "security vulnerabilities, and style. Format your response in markdown. "
+            f"Here is the diff:\n\n{file_diffs}"
+        )
+        ai_response = ai_model.generate_content(prompt).text
+        pr.create_issue_comment(f"### Uvindu AI BOT Code Review\n\n{ai_response}")
+        return {'message': 'code review done successfully'}
+    except Exception as e:
+        pr.create_issue_comment(f'Error with reviewing code')
+        return {'message': 'Error in code reviewing'}
