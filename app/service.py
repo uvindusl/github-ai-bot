@@ -155,3 +155,19 @@ def genarate_review(repo, issue_number):
     except Exception as e:
         pr.create_issue_comment(f'Error with reviewing code')
         return {'message': 'Error in code reviewing'}
+    
+def merge_pr(repo, issue_number):
+    try:
+        pr = repo.get_pull(issue_number)
+            
+        if not pr.mergeable:
+            repo.get_issue(issue_number).create_comment("This PR has some conflicts")
+            return {"message": "PR not mergeable."}
+                
+        pr.merge(merge_method='merge', commit_message=f"Merge pull request #{pr.number}")
+                
+        repo.get_issue(issue_number).create_comment("Pull request merged successfully!")
+        return {"message": "PR merged."}
+            
+    except Exception as e:
+            print(f"Error merging PR: {e}")

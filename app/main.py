@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Header, HTTPException, status
 from utils import github_init
 import scheam
 from config import settings 
-from .service import create_feature, create_pr, genarate_review
+from .service import create_feature, create_pr, genarate_review, merge_pr
 from typing import Optional
 
 app = FastAPI()
@@ -65,6 +65,8 @@ async def handle_github_webhook(
 
         if '/review' in comment_body.lower():
             return genarate_review(repo, issue_number)
+        elif comment_body.lower().startswith("/merge"):
+            return merge_pr(repo, issue_number)
 
     return {'message' : 'webhook received, no action taken'}
 
