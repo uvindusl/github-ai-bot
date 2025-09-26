@@ -9,3 +9,10 @@ class Feature(BaseModel):
 class FeatureSuccess(BaseModel):
     message: str
     pull_request_url: str
+
+
+class PullRequestDetails(BaseModel):
+    repo_name: str
+    source_branch: str
+    title: str
+    base_branch: str

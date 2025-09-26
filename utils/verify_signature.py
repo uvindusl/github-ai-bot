@@ -15,17 +15,15 @@ def verify_signature(payload_body, secret_token, signature_header):
     if not hmac.compare_digest(expected_signature, signature_header):
         raise HTTPException(status_code=403, detail="Request signatures didn't match!")
     
-# Read the private key file ONCE and store its content as a string
+# Read the private key file
 try:
     with open(settings.github_private_key_path, 'r') as key_file:
         github_content = key_file.read() 
 except FileNotFoundError:
     raise Exception(f"GitHub private key file not found at {settings.github_private_key_path}")
 
+# function get installation id
 def get_installation_id(app_id: int, owner: str) -> int:
-    """
-    Retrieves the installation ID for a given app ID and owner (user or organization).
-    """
     try:
         integration = GithubIntegration(app_id, github_content)
 
@@ -43,9 +41,6 @@ def get_installation_id(app_id: int, owner: str) -> int:
 
 # function to authanticate
 def get_github_app_instance(installation_id: int):
-    """
-    Creates an authenticated GitHub instance for a specific repository installation.
-    """
     try:
         app_auth = Auth.AppAuth(settings.github_app_id, github_content)
         installation_auth = app_auth.get_installation_auth(installation_id)
