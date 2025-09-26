@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from utils import verify_signature
+from utils import github_init
 import scheam
 from config import settings 
 from .service import create_feature, create_pr
@@ -13,7 +13,7 @@ def read_root():
 @app.post('/newfeature', response_model=scheam.FeatureSuccess)
 def new_feature(feature: scheam.Feature):
     owner = feature.repo_name.split('/')[0]
-    installation_id = verify_signature.get_installation_id(settings.github_app_id, owner)
+    installation_id = github_init.get_installation_id(settings.github_app_id, owner)
 
     return create_feature(feature.language, feature.feature, feature.title, feature.repo_name, installation_id)
 
@@ -21,7 +21,7 @@ def new_feature(feature: scheam.Feature):
 def new_pull_request(pr_details: scheam.PullRequestDetails):
 
     owner = pr_details.repo_name.split('/')[0]
-    installation_id = verify_signature.get_installation_id(settings.github_app_id, owner)
+    installation_id = github_init.get_installation_id(settings.github_app_id, owner)
 
     return create_pr(
         repo_name=pr_details.repo_name,

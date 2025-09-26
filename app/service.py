@@ -1,6 +1,6 @@
 from config import settings
 from utils.gemini_init import ai_model
-from utils import verify_signature
+from utils import github_init
 from fastapi import HTTPException
 import re
 
@@ -8,7 +8,7 @@ import re
 def create_feature(language, feature, title, repo_name, installation_id):
     try:
 
-        github_app = verify_signature.get_github_app_instance(installation_id)
+        github_app = github_init.get_github_app_instance(installation_id)
         if not github_app:
             raise HTTPException(status_code=500, detail="GitHub App authentication failed.")
 
@@ -107,7 +107,7 @@ def genarate_pr_description(repo, head, base):
 def create_pr(title, repo_name, head, base, installation_id):
     try:
           
-        github_app = verify_signature.get_github_app_instance(installation_id)
+        github_app = github_init.get_github_app_instance(installation_id)
         if not github_app:
             raise HTTPException(status_code=500, detail="GitHub App authentication failed.")
         
