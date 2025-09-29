@@ -1,6 +1,10 @@
 import requests
+from dotenv import load_dotenv, dotenv_values
+import os
 
-base_url  = "http://127.0.0.1:8000"
+load_dotenv()
+
+base_url  = os.getenv("URL")
 
 def send_request(endpoint, data):
     url = f'{base_url}/{endpoint}'
